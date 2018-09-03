@@ -45,26 +45,26 @@ void printList(Node** head) {
 	}
 }
 
-bool checkforthree(Node** current){
+bool checkforthree(Node* current){
 	int i=1;
-	Node* curr = *current;
+	Node* curr = current;
 	while(curr->next != NULL && i<=3){
 		i++;
 		curr = curr->next;
 	}
-	if(i==3) return true;
+	if(i>=3) return true;
 	else return false;
 
 }
 
-void swapthree(Node** current){
-	Node* first= *current;
-	Node* secont= first->next;
+void swapthree(Node* current){
+	Node* first= current;
+	Node* second= first->next;
 	Node* third= second->next;
-	Node* copyOfFirst= first;
+	int copyOfFirst= first->data;
 
-	first = third;
-	third = copyOfFirst;
+	first->data = third->data;
+	third->data = copyOfFirst;
 
 }
 int main()
@@ -81,6 +81,12 @@ int main()
 		int k;
 		cin>>k;
 		append(&head, k);
+	}
+
+	Node* current = head;
+	while(checkforthree(current)){
+		swapthree(current);
+		current = current->next->next->next;
 	}
 
 	printList(&head);
