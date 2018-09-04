@@ -7,17 +7,19 @@ class Node
 public:
 	int data; 
 	Node* next;
+	Node* prev;
 	Node();
-	Node(int data1){
+	Node(int data1, Node* previousNode){
 		data = data1;
 		next = NULL;
+		prev = previousNode;
 	}
 };
 
 void append(Node** head, int newData) {
 	if (*head == NULL)
 	{
-		*head = new Node(newData);
+		*head = new Node(newData, NULL);
 	}
 	else {
 		Node* previousNode;
@@ -26,7 +28,7 @@ void append(Node** head, int newData) {
 		while(previousNode->next != NULL){
 			previousNode = previousNode->next;
 		}
-		Node* newNode = new Node(newData);
+		Node* newNode = new Node(newData, previousNode);
 		previousNode->next = newNode;
 	}
 }
@@ -43,46 +45,101 @@ void printList(Node** head) {
 	}
 }
 
-void split(Node** head, Node** headA, Node** headB){
-	*headA = new Node(*head->data);
-	Node* nextNode = *head;
-	int i=0;
-	do {
-		if(i%2==0){
-			append(&headA, nextNode->data);
-		}
-		else if(i%2==1){
-			append(&headB, nextNode->data);
-		}
-		nextNode = nextNode->next;
-		i++;
+
+//Functions for the DEQUE
+void insertFront(int data, Node** oldHead, Node** oldTail){
+	Node* head= *oldHead;
+	Node* newHead = new Node(data, NULL);
+	newHead->next = head;
+	if(head!= NULL) head->prev = newHead;
+	*oldHead = newHead;
+
+	if((*oldTail)== NULL){
+		*oldTail = newHead;
 	}
-	while(nextNode->next != NULL);
+}
+void insertLast(int data, Node** oldHead, Node** oldTail){
+	Node* newTail = new Node(data, (*oldTail));
+	if((*oldTail)!=NULL){
+		(*oldTail)->next = newTail;
+	}
+	*oldTail = newTail;
+
+	if((*oldHead)== NULL){
+		*oldHead=newTail;
+	}
+}
+void deleteFront(Node** head, Node** tail){
+	if((*head)!=NULL && (*head)->next == NULL) {
+		*tail = NULL;
+		*head = NULL;
+	}
+	else if((*head)!=NULL){
+		*head= (*head)->next;
+		(*head)->prev=NULL;
+	}
+}
+void deleteLast(Node** head, Node** tail){
+	if((*tail)!= NULL && (*tail)->prev == NULL) {
+		*head = NULL;
+		*tail = NULL;
+	}
+	else if((*tail)!= NULL) {
+		*tail = (*tail)->prev;
+		(*tail)->next = NULL;
+	}
+}
+
+void showPrompt(){
+	cout<<endl;
+	cout<<"Press 1 to Show List"<<endl;
+	cout<<"Press 2 to Insert at Front"<<endl;
+	cout<<"Press 3 to Insert at End"<<endl;
+	cout<<"Press 4 to Delete at Front"<<endl;
+	cout<<"Press 5 to Delete at End"<<endl;
+	cout<<"Press 0 to exit"<<endl;
 }
 
 int main()
 {
 	Node* head  = NULL;
-	Node* headA = NULL;
-	Node* headB = NULL;
+	Node* tail = NULL;
+	while(true){
+		showPrompt();
+		int c;
+		cin>>c;
+		cout<<endl;
+		if (c==1){
+			printList(&head);
+		}
+		else if (c==2){
+			cout<<"Enter Data"<<endl;
+			int data;
+			cin>>data;
+			insertFront(data,&head,&tail);
 
+		}
+		else if (c==3){
+			cout<<"Enter Data"<<endl;
+			int data;
+			cin>>data;
+			insertLast(data,&head,&tail);
+		}
+		else if (c==4){
+			deleteFront(&head,&tail);
+		}
+		else if (c==5){
+			deleteLast(&head,&tail);
 
-	cout<<"Enter the length of linked list"<< endl;
-	int length;
-	cin>>length;
-
-	for (int i = 0; i < length; ++i)
-	{
-		int k;
-		cin>>k;
-		append(&head, k);
+		}
+		else if(c==0){
+			break;
+		}
+		else {
+			cout<<"Enter a valid number"<<endl;
+		}
 	}
-
-	printList(&head);
-	split(&head, &headA, &headB);
-
-	printList(&headA);
-	printList(&headB);
+	
 
 	return 0;
 }
