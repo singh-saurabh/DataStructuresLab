@@ -48,11 +48,14 @@ void printList(Node** head) {
 bool checkforthree(Node* current){
 	int i=1;
 	Node* curr = current;
-	while(curr->next != NULL && i<=3){
+	if(curr!=NULL){
+		while(curr->next != NULL && i<=3){
 		i++;
 		curr = curr->next;
 	}
 	if(i>=3) return true;
+	else return false;
+	}
 	else return false;
 
 }
